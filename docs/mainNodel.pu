@@ -1,0 +1,78 @@
+﻿@startuml
+!include plantuml.pu
+
+title Основная модель
+
+class User {
+  +string Name
+  +string NickName
+  +DateTime Created
+}
+
+class Team {
+  +string Name
+  +User Creator
+  +DateTime Created
+  +List<User> Admins
+  +List<User> Members
+}
+
+class SessionTeam {
+  +List<User> Players
+}
+
+class GameSession {
+  +Game Game
+  +List<SessionTeam> Teams
+  +DateTime StartTime
+}
+
+class EnteredCode {
+  +string Code
+  +DateTime Time
+  +User User
+  +????SessionTeam Team ????
+}
+
+class Game {
+  +List<Puzzle> Puzzles
+  +List<Location> Locations
+}
+
+class Puzzle {
+  +string Text
+  +Location Location
+
+}
+
+class Location {
+  List<CodeOnLocation> Codes
+}
+
+class CodeOnLocation {
+  +string Code
+  +Type
+  +int Cost
+  +string AdminComment
+  +string Message
+}
+
+User "0..*" --o "0..1" Team : создаёт
+User "1..*" --o "0..*" Team : администрирует
+User "0..*" --o "0..*" Team : состоит
+User "1" --- "0..*" EnteredCode
+
+Team "1" --- "1" SessionTeam
+User "1..*" --o  "1" SessionTeam
+
+GameSession *-- "0..*" SessionTeam
+GameSession *-- "0..*" EnteredCode
+
+Game *-- "0..*" GameSession
+Game *-- "0..*" Puzzle
+Game *-- "0..*" Location
+Puzzle "1" --- "1" Location
+Location *-- "0..*" CodeOnLocation
+Location *-- "0..*" EnteredCode
+
+@enduml
