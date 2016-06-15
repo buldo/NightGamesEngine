@@ -1,4 +1,4 @@
-﻿{
+{
   "userSecretsId": "aspnet-Nge.Web-e78032a8-fd38-4d70-833a-6ca49f34ffb1",
 
   "dependencies": {
@@ -37,7 +37,8 @@
     "Microsoft.VisualStudio.Web.CodeGenerators.Mvc": {
       "version": "1.0.0-preview1-final",
       "type": "build"
-    }
+    },
+    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.0.0-rc2-release1"
   },
 
   "tools": {
