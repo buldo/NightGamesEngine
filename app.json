@@ -1,7 +1,0 @@
-{
-    "name": "Nge",
-    "description": "Nge",
-    "env": {
-	"BUILDPACK_URL": "https://github.com/noliar/dotnet-buildpack.git#cli-using-script"
-    }
-}
