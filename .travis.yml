@@ -1,4 +1,4 @@
-language: csharp
+language: generic
 
 #dotnet cli require Ubuntu 14.04
 sudo: required
@@ -34,6 +34,7 @@ before_install:
   - sudo bash ./scripts/obtain/install.sh --channel "preview" --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR" --no-path
   # add dotnet to PATH
   - export PATH="$DOTNET_INSTALL_DIR:$PATH"
+  - chmod +x ./build.sh 
 
 script:
   - ./build.sh
