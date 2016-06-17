@@ -34,8 +34,7 @@ namespace Nge.Web
                 catch (System.Exception)
                 {
                     // Ничего страшного, если не нашли. Может быть отлаживаемся на сервера
-                }
-                
+                }   
             }
 
             builder.AddEnvironmentVariables();
