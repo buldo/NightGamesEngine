@@ -1,4 +1,4 @@
-language: generic
+language: csharp
 
 #dotnet cli require Ubuntu 14.04
 sudo: required
