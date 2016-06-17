@@ -1,9 +1,6 @@
 language: generic
-
-#dotnet cli require Ubuntu 14.04
 sudo: required
 dist: trusty
-
 addons:
   apt:
     packages:
@@ -13,28 +10,30 @@ addons:
     - libssl-dev
     - libunwind8
     - zlib1g
-
 os:
-  - linux
-
+- linux
 env:
-  matrix: 
-    - CLI_VERSION=Latest
-
+  matrix:
+  - CLI_VERSION=Latest
 matrix:
   allow_failures:
-    - env: CLI_VERSION=Latest
-
+  - env: CLI_VERSION=Latest
 before_install:
-  # Download script to install dotnet cli
-  - curl -L --create-dirs https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh -o ./scripts/obtain/install.sh
-  - find ./scripts -name "*.sh" -exec chmod +x {} \;
-  - export DOTNET_INSTALL_DIR="$PWD/.dotnetcli"
-  # use bash to workaround bug https://github.com/dotnet/cli/issues/1725
-  - sudo bash ./scripts/obtain/install.sh --channel "preview" --version "$CLI_VERSION" --install-dir "$DOTNET_INSTALL_DIR" --no-path
-  # add dotnet to PATH
-  - export PATH="$DOTNET_INSTALL_DIR:$PATH"
-  - chmod +x ./build.sh 
-
+- curl -L --create-dirs https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/dotnet-install.sh
+  -o ./scripts/obtain/install.sh
+- find ./scripts -name "*.sh" -exec chmod +x {} \;
+- export DOTNET_INSTALL_DIR="$PWD/.dotnetcli"
+- sudo bash ./scripts/obtain/install.sh --channel "preview" --version "$CLI_VERSION"
+  --install-dir "$DOTNET_INSTALL_DIR" --no-path
+- export PATH="$DOTNET_INSTALL_DIR:$PATH"
+- chmod +x ./build.sh
 script:
-  - ./build.sh
+- "./build.sh"
+deploy:
+  provider: heroku
+  api_key:
+    secure: FoTmAMvqsU8QZorp7trAfdZQg59mW7RHrOgXz19Rgxp41uroilsSfKPPD1lNH/Hcx2+n2jpf1ekFHrzE0rSd/ahj6aienaHPr34vM7Ky0PyiquPG7VOQnrSn+eVnWK6yEbE5MvZX0fqYX0HeuCXNoI19j2H9dMCwCcxxnguLKOxoQfJxelmPMONtxca5sNA9JrToRTaoTDnp0VB3vW/NMlAyaAuzWOAY1SbCOL694gmIfExs+CRS7S3lJCP27AvQieEa7HOALdnyto+cbo8Xtb5Ot4dWQo0jVAaaazz4+dfUQ+GtmU0gvN6VzlHG1FCiAkJlQ6SibVTCO+09lP05XM+NWfxBWpCMCmHNl7+bneVo2LkuMZQ7F5junlDzxckPewl+pRYIFh7wwBlrcj1jHu4LG9UYTMmTcLuK0iwrcjzTi8BJID1n4j4ciZa1fzVy585gTqgTRNUAwBVCj2RawCLw6MUMmdIAJcLrhhYfRi8N+J2+iNcnRDDnN9tTb5S3WiPpsM7TgS5MkoY5RV1KayEZ7dYdXHKie9oa0FhnRgYFH6K9CW3MlDEYf1peneSlw9xc8JLa6GIdAf+EWwYlfflIUR1JdKUr8izMt1qT1KWbOiN1KjDJtQSmofDGSUBf+RozNasIhxMaN/XtuzqohOqvI2asM7HZZCmgHLHcrD4=
+  app: nge-dev
+  on:
+    repo: buldo/NightGamesEngine
+    branch: heroku
