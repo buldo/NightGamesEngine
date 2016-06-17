@@ -1,2 +1,2 @@
 [config]
-project = Nge/src/Nge.Web
+project = Nge/src/Nge.Web/project.json
