@@ -37,3 +37,5 @@ deploy:
   on:
     repo: buldo/NightGamesEngine
     branch: heroku
+  run:
+    - "dotnet ef database update"
