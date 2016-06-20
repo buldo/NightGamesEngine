@@ -15,6 +15,8 @@ using Nge.Web.Services;
 
 namespace Nge.Web
 {
+    using Buldo.Heroku;
+
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -22,7 +24,8 @@ namespace Nge.Web
             var builder =
                 new ConfigurationBuilder().SetBasePath(env.ContentRootPath)
                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                    .AddEnvironmentVariables();
 
             if (env.IsDevelopment())
             {
@@ -36,8 +39,7 @@ namespace Nge.Web
                     // Ничего страшного, если не нашли. Может быть отлаживаемся на сервера
                 }   
             }
-
-            builder.AddEnvironmentVariables();
+            
             Configuration = builder.Build();
         }
 
@@ -46,9 +48,15 @@ namespace Nge.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            var herokuDatabaseUrl = Configuration["DATABASE_URL"];
+            if (string.IsNullOrWhiteSpace(herokuDatabaseUrl))
+            {
+                services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            }
+            else
+            {
+                services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(DbHelpers.DatabaseUrlToPostgreConnectionString(herokuDatabaseUrl)));
+            }
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()

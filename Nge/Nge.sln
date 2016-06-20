@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Nge.Web", "src\Nge.Web\Nge.Web.xproj", "{8E526351-F761-4266-B148-27FD870E59D8}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Buldo.Heroku", "src\Buldo.Heroku\Buldo.Heroku.xproj", "{8ED889C2-9A52-4880-887B-FA6BA68E324E}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Buldo.Heroku.Tests", "src\Buldo.Heroku.Tests\Buldo.Heroku.Tests.xproj", "{37A5ACBA-C805-4AC8-A9A1-9FE007AF4365}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,11 +26,21 @@ Global
 		{8E526351-F761-4266-B148-27FD870E59D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E526351-F761-4266-B148-27FD870E59D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E526351-F761-4266-B148-27FD870E59D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ED889C2-9A52-4880-887B-FA6BA68E324E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ED889C2-9A52-4880-887B-FA6BA68E324E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ED889C2-9A52-4880-887B-FA6BA68E324E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ED889C2-9A52-4880-887B-FA6BA68E324E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37A5ACBA-C805-4AC8-A9A1-9FE007AF4365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37A5ACBA-C805-4AC8-A9A1-9FE007AF4365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37A5ACBA-C805-4AC8-A9A1-9FE007AF4365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37A5ACBA-C805-4AC8-A9A1-9FE007AF4365}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8E526351-F761-4266-B148-27FD870E59D8} = {8996214A-2E10-4151-A002-9211C0F9CD2C}
+		{8ED889C2-9A52-4880-887B-FA6BA68E324E} = {8996214A-2E10-4151-A002-9211C0F9CD2C}
+		{37A5ACBA-C805-4AC8-A9A1-9FE007AF4365} = {8996214A-2E10-4151-A002-9211C0F9CD2C}
 	EndGlobalSection
 EndGlobal
