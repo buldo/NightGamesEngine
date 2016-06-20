@@ -64,7 +64,7 @@ namespace Nge.Web
                 {
                     // Мы в процессе сборки на хероку
                     dynamic receiveData = JsonConvert.DeserializeObject(receiveDataString);
-                    connectionString = receiveData.push_metadata.env.DefaultConnection + "SSL Mode=Require;Trust Server Certificate=true;";
+                    connectionString = receiveData.push_metadata.env.DefaultConnection + "SSL Mode=Require;Trust Server Certificate=true;Pooling=false;";
                 }
             }
             else
