@@ -17,6 +17,8 @@ namespace Nge.Web
 {
     using Buldo.Heroku;
 
+    using Newtonsoft.Json;
+
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -48,15 +50,31 @@ namespace Nge.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var herokuDatabaseUrl = Configuration["DATABASE_URL"];
+            string connectionString;
+            string herokuDatabaseUrl = Configuration["DATABASE_URL"];
             if (string.IsNullOrWhiteSpace(herokuDatabaseUrl))
             {
-                services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                var receiveDataString = Configuration["RECEIVE_DATA"];
+                if (string.IsNullOrWhiteSpace(receiveDataString))
+                {
+                    // Мы в локальной среде
+                    connectionString = Configuration.GetConnectionString("DefaultConnection");
+                }
+                else
+                {
+                    // Мы в процессе сборки на хероку
+                    dynamic receiveData = JsonConvert.DeserializeObject(receiveDataString);
+                    connectionString = receiveData.push_metadata.env.DefaultConnection + "SSL Mode=Require;";
+                }
             }
             else
             {
-                services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(DbHelpers.DatabaseUrlToPostgreConnectionString(herokuDatabaseUrl)));
+                // По простому получили все данные и работаем
+                connectionString = DbHelpers.DatabaseUrlToPostgreConnectionString(herokuDatabaseUrl);
+
             }
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
