@@ -36,4 +36,5 @@ deploy:
     secure: FoTmAMvqsU8QZorp7trAfdZQg59mW7RHrOgXz19Rgxp41uroilsSfKPPD1lNH/Hcx2+n2jpf1ekFHrzE0rSd/ahj6aienaHPr34vM7Ky0PyiquPG7VOQnrSn+eVnWK6yEbE5MvZX0fqYX0HeuCXNoI19j2H9dMCwCcxxnguLKOxoQfJxelmPMONtxca5sNA9JrToRTaoTDnp0VB3vW/NMlAyaAuzWOAY1SbCOL694gmIfExs+CRS7S3lJCP27AvQieEa7HOALdnyto+cbo8Xtb5Ot4dWQo0jVAaaazz4+dfUQ+GtmU0gvN6VzlHG1FCiAkJlQ6SibVTCO+09lP05XM+NWfxBWpCMCmHNl7+bneVo2LkuMZQ7F5junlDzxckPewl+pRYIFh7wwBlrcj1jHu4LG9UYTMmTcLuK0iwrcjzTi8BJID1n4j4ciZa1fzVy585gTqgTRNUAwBVCj2RawCLw6MUMmdIAJcLrhhYfRi8N+J2+iNcnRDDnN9tTb5S3WiPpsM7TgS5MkoY5RV1KayEZ7dYdXHKie9oa0FhnRgYFH6K9CW3MlDEYf1peneSlw9xc8JLa6GIdAf+EWwYlfflIUR1JdKUr8izMt1qT1KWbOiN1KjDJtQSmofDGSUBf+RozNasIhxMaN/XtuzqohOqvI2asM7HZZCmgHLHcrD4=
   app:
     heroku: nge-dev
-  run: "cd \$HOME/heroku_output && dotnet ef database update"
+  run: 
+    - "cd \$HOME/heroku_output && dotnet ef database update"
