@@ -38,9 +38,9 @@
       "version": "1.0.0-preview1-final",
       "type": "build"
     },
-    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.0.0-rc2-release1",
     "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-rc2-final",
-    "Buldo.Heroku": "1.0.0-*"
+    "Buldo.Heroku": "1.0.0-*",
+    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.0.0-rc3-ci-39"
   },
 
   "tools": {
