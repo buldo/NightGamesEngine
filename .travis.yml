@@ -10,7 +10,7 @@ addons:
     - libssl-dev
     - libunwind8
     - zlib1g
-	- openssl
+    - openssl
 os:
 - linux
 env:
