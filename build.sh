@@ -1,5 +1,5 @@
 #!/bin/bash
-dotnet restore --source="https://api.nuget.org/v3/index.json,https://www.myget.org/F/npgsql-unstable/api/v3/index.json"
+dotnet restore
 for path in Nge/src/*/project.json; do
     dirname="$(dirname "${path}")"
     dotnet build ${dirname} -c Release
