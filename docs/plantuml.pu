@@ -1,0 +1,57 @@
+skinparam BackgroundColor transparent
+skinparam DefaultFontName Roboto
+skinparam DefaultFontColor #3E4349
+skinparam Shadowing false
+
+skinparam Note {
+    BorderColor #0071ab
+    FontColor #0071ab
+    BackgroundColor #c8ecff
+}
+
+skinparam SequenceParticipantBackgroundColor #c9fd9c
+skinparam SequenceParticipantBorderColor #74b43c
+
+skinparam SequenceArrowColor #3E4349
+skinparam SequenceLifeLine {
+    BorderColor #3E4349
+    BackgroundColor transparent
+}
+
+skinparam SequenceDivider {
+    FontColor #0070a9
+    BorderColor #008bd2
+    BorderThickness 1.0
+    BackgroundColor transparent
+}
+
+skinparam SequenceGroup {
+    FontColor #008bd2
+    BorderColor #008bd2
+    BackgroundColor transparent
+    BorderThickness 1
+}
+
+skinparam SequenceBox {
+    FontColor #008bd2
+    BorderColor #008bd2
+    BackgroundColor transparent
+    BorderThickness 1
+}
+
+skinparam Component {
+    Style uml2
+    InterfaceBorderColor #008bd2
+    InterfaceBackgroundColor transparent
+    BorderColor #008bd2
+    BackgroundColor transparent
+    ArrowColor #3E4349
+    ArrowFontColor #008bd2
+}
+
+skinparam Package {
+    FontColor #008bd2
+    BorderColor #008bd2
+    BorderThickness 1.0
+    BackgroundColor transparent
+}
