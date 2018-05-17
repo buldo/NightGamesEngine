@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Nge.Web.Data;
 using Nge.Web.Models;
+using Nge.Web.Models.Codes;
 
 namespace Nge.Web.Controllers
 {
@@ -22,7 +23,12 @@ namespace Nge.Web.Controllers
         // GET: Codes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Codes.ToListAsync());
+            var vm = new IndexViewModel()
+            {
+                Codes = await _context.Codes.ToListAsync()
+            };
+
+            return View(vm);
         }
 
         // GET: Codes/Details/5
@@ -43,27 +49,23 @@ namespace Nge.Web.Controllers
             return View(code);
         }
 
-        // GET: Codes/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Codes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Type,Value")] Code code)
+        public async Task<IActionResult> Create(string newCodeType, string newCodeValue)
         {
             if (ModelState.IsValid)
             {
-                code.Id = Guid.NewGuid();
+                var code = new Code
+                {
+                    Id = Guid.NewGuid(),
+                    Value = newCodeValue.Trim(),
+                    Type = newCodeType.Trim()
+                };
                 _context.Add(code);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(code);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Codes/Edit/5
@@ -120,29 +122,17 @@ namespace Nge.Web.Controllers
         // GET: Codes/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
+            if (id != null)
             {
-                return NotFound();
+                var code = await _context.Codes
+                    .SingleOrDefaultAsync(m => m.Id == id);
+                if (code != null)
+                {
+                    _context.Codes.Remove(code);
+                    await _context.SaveChangesAsync();
+                }
             }
 
-            var code = await _context.Codes
-                .SingleOrDefaultAsync(m => m.Id == id);
-            if (code == null)
-            {
-                return NotFound();
-            }
-
-            return View(code);
-        }
-
-        // POST: Codes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var code = await _context.Codes.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Codes.Remove(code);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

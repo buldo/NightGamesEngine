@@ -55,6 +55,7 @@ namespace Nge.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> EnterCode(string codeToEnter)
         {
+            codeToEnter = codeToEnter.Trim();
             var user = await _userManager.GetUserAsync(User);
             await _codesService.EnterCodeAsync(codeToEnter, user);
             return RedirectToAction("Index");

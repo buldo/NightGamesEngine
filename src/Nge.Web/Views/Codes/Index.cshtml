@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Nge.Web.Models.Code>
+﻿@model Nge.Web.Models.Codes.IndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -6,23 +6,36 @@
 
 <h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div class="form-group">
+                <label asp-for="NewCodeValue" class="control-label"></label>
+                <input asp-for="NewCodeValue" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="NewCodeType" class="control-label"></label>
+                <input asp-for="NewCodeType" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Type)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Value)
-                </th>
+                <th>Тип</th>
+                <th>Значение</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+
+    @foreach (var item in Model.Codes)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Type)
@@ -36,6 +49,6 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
