@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Nge.Web.Data;
 using Nge.Web.Models;
+using Nge.Web.Repos;
 using Nge.Web.Services;
 
 namespace Nge.Web
@@ -50,6 +52,8 @@ namespace Nge.Web
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+
+            services.TryAddTransient<CodesRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
