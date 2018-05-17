@@ -27,9 +27,22 @@ namespace Nge.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequiredLength = 4;
+                    options.Password.RequiredUniqueChars = 0;
+                    options.Password.RequireUppercase = false;
+                    options.User.RequireUniqueEmail = true;
+                    options.SignIn.RequireConfirmedEmail = false;
+                    options.SignIn.RequireConfirmedPhoneNumber = false;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
