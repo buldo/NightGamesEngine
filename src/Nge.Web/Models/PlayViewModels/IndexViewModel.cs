@@ -7,7 +7,7 @@ namespace Nge.Web.Models.PlayViewModels
 {
     public class IndexViewModel
     {
-        public string CodeToEnter { get; set; }
+        public string CodeToEnter { get; set; } = string.Empty;
 
         public List<CodeViewModel> Codes;
     }

@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Nge.Web.Data;
 using Nge.Web.Models;
-using Nge.Web.Repos;
+using Nge.Web.Models.PlayViewModels;
+using Nge.Web.Services;
 
 namespace Nge.Web.Controllers
 {
@@ -15,26 +16,47 @@ namespace Nge.Web.Controllers
     public class PlayController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly CodesRepo _codesRepo;
+        private readonly CodesService _codesService;
 
         public PlayController(
             UserManager<ApplicationUser> userManager,
-            CodesRepo codesRepo)
+            CodesService codesService)
         {
             _userManager = userManager;
-            _codesRepo = codesRepo;
+            _codesService = codesService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            var enteredCodes = await _codesService.GetSuccessCodesAsync(user);
+            var allCodes = await _codesService.GetLevelCodesAsync();
+            allCodes.RemoveWhere(c => enteredCodes.Any(ec => ec.CodeId == c.CodeId));
+
+            var codesVm = new List<CodeViewModel>(enteredCodes.Count + allCodes.Count);
+            foreach (var enteredCode in enteredCodes)
+            {
+                codesVm.Add(new CodeViewModel {CodeType = enteredCode.Type, IsEntered = true});
+            }
+
+            foreach (var code in allCodes)
+            {
+                codesVm.Add(new CodeViewModel { CodeType = code.Type, IsEntered = false });
+            }
+
+            var pageViewModel = new IndexViewModel
+            {
+                Codes = codesVm
+            };
+
+            return View(pageViewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> EnterCode(string codeToEnter)
         {
             var user = await _userManager.GetUserAsync(User);
-            await _codesRepo.EnterCode(codeToEnter, user);
+            await _codesService.EnterCodeAsync(codeToEnter, user);
             return RedirectToAction("Index");
         }
     }
