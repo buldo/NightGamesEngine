@@ -33,20 +33,40 @@ namespace Nge.Web.Controllers
             var allCodes = await _codesService.GetLevelCodesAsync();
             allCodes.RemoveWhere(c => enteredCodes.Any(ec => ec.CodeId == c.CodeId));
 
-            var codesVm = new List<CodeViewModel>(enteredCodes.Count + allCodes.Count);
+            var codesVm = new List<ShortCodeViewModel>(enteredCodes.Count + allCodes.Count);
             foreach (var enteredCode in enteredCodes)
             {
-                codesVm.Add(new CodeViewModel {CodeType = enteredCode.Type, IsEntered = true});
+                codesVm.Add(new ShortCodeViewModel
+                {
+                    CodeType = enteredCode.Type,
+                    IsEntered = true
+                });
             }
 
             foreach (var code in allCodes)
             {
-                codesVm.Add(new CodeViewModel { CodeType = code.Type, IsEntered = false });
+                codesVm.Add(new ShortCodeViewModel
+                {
+                    CodeType = code.Type,
+                    IsEntered = false
+                });
+            }
+
+            var enteredCodesVms = new List<DetailCodeViewModel>(enteredCodes.Count);
+            foreach (var enteredCode in enteredCodes)
+            {
+                enteredCodesVms.Add(new DetailCodeViewModel
+                {
+                    CodeType = enteredCode.Type,
+                    CodeValue = enteredCode.Value
+                });
             }
 
             var pageViewModel = new IndexViewModel
             {
-                Codes = codesVm
+                Codes = codesVm,
+                EnteredCodes = enteredCodesVms
+
             };
 
             return View(pageViewModel);

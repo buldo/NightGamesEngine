@@ -30,14 +30,14 @@ namespace Nge.Web.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<HashSet<(Guid CodeId, string Type)>> GetSuccessCodesAsync(ApplicationUser user)
+        public async Task<HashSet<(Guid CodeId, string Type, string Value)>> GetSuccessCodesAsync(ApplicationUser user)
         {
             var goodCodes = await _dbContext
                 .EnteredCodes
-                .Join(_dbContext.Codes, e => e.Value, c => c.Value, (e, code) => new {code.Id, code.Type})
+                .Join(_dbContext.Codes, e => e.Value, c => c.Value, (e, code) => new {code.Id, code.Type, code.Value})
                 .ToListAsync();
 
-            return goodCodes.Select(c => (CodeId: c.Id, Type: c.Type)).ToHashSet();
+            return goodCodes.Select(c => (CodeId: c.Id, Type: c.Type, Value: c.Value)).ToHashSet();
         }
 
         public async Task<HashSet<(Guid CodeId, string Type)>> GetLevelCodesAsync()

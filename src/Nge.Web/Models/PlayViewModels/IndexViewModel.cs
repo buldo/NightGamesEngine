@@ -9,6 +9,8 @@ namespace Nge.Web.Models.PlayViewModels
     {
         public string CodeToEnter { get; set; } = string.Empty;
 
-        public List<CodeViewModel> Codes;
+        public List<ShortCodeViewModel> Codes { get; set; }
+
+        public List<DetailCodeViewModel> EnteredCodes { get; set; }
     }
 }
