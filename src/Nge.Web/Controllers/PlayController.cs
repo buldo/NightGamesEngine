@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Nge.Web.Data;
 using Nge.Web.Models;
 using Nge.Web.Models.PlayViewModels;
 using Nge.Web.Services;
 
 namespace Nge.Web.Controllers
 {
-    [Authorize]
     public class PlayController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

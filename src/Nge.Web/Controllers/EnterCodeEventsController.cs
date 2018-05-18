@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Nge.Web.Data;
 using Nge.Web.Models;
 
 namespace Nge.Web.Controllers
 {
+    [Authorize(Roles = Roles.Administrator)]
     public class EnterCodeEventsController : Controller
     {
         private readonly ApplicationDbContext _context;

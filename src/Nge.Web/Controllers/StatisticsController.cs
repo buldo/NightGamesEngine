@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nge.Web.Data;
+using Nge.Web.Models;
 using Nge.Web.Models.StatisticsViewModels;
 using Nge.Web.Services;
 
 namespace Nge.Web.Controllers
 {
+    [Authorize(Roles = Roles.Administrator)]
     public class StatisticsController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
