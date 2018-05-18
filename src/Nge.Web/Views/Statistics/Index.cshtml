@@ -1,0 +1,17 @@
+﻿@model Nge.Web.Models.StatisticsViewModels.IndexViewModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <ul>
+        @foreach (var player in Model.Players)
+        {
+            <li>
+                <span>@player.Name </span>
+                <span>@player.Count</span>
+            </li>
+        }
+    </ul>
+</div>
+
