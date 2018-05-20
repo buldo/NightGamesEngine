@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Nge.Web.Data;
 using Nge.Web.Models;
 
-namespace Nge.Web.Services
+namespace Nge.Web.Services.Codes
 {
     public class CodesService
     {
@@ -17,8 +17,13 @@ namespace Nge.Web.Services
             _dbContext = dbContext;
         }
 
-        public async Task AddCode(string codeValue, string codeType)
+        public async Task<CodeUpdateResult> AddCode(string codeValue, string codeType)
         {
+            if (Exists(codeValue))
+            {
+                return CodeUpdateResult.CreateExisted();
+            }
+
             var code = new Code
             {
                 Id = Guid.NewGuid(),
@@ -29,6 +34,7 @@ namespace Nge.Web.Services
 
             _dbContext.Add(code);
             await _dbContext.SaveChangesAsync();
+            return CodeUpdateResult.CreateSuccess();
         }
 
         public async Task<List<Code>> GetAll()
@@ -41,13 +47,19 @@ namespace Nge.Web.Services
             return await _dbContext.Codes.SingleOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task UpdateCode(Guid id, string value, string type)
+        public async Task<CodeUpdateResult> UpdateCode(Guid id, string value, string type)
         {
+            if (Exists(value))
+            {
+                return CodeUpdateResult.CreateExisted();
+            }
+
             var code = await Get(id);
             code.Type = type;
             code.Value = value;
             _dbContext.Update(code);
             await _dbContext.SaveChangesAsync();
+            return CodeUpdateResult.CreateSuccess();
         }
 
         public bool Exists(Guid id)
@@ -64,6 +76,11 @@ namespace Nge.Web.Services
                 _dbContext.Codes.Remove(code);
                 await _dbContext.SaveChangesAsync();
             }
+        }
+
+        private bool Exists(string value)
+        {
+            return _dbContext.Codes.Any(e => e.Value == value);
         }
     }
 }

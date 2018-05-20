@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nge.Web.Models;
 using Nge.Web.Models.Codes;
 using Nge.Web.Services;
+using Nge.Web.Services.Codes;
 
 namespace Nge.Web.Controllers
 {
@@ -22,11 +23,7 @@ namespace Nge.Web.Controllers
         // GET: Codes
         public async Task<IActionResult> Index()
         {
-            var vm = new IndexViewModel
-            {
-                Codes = (await _codesService.GetAll()).OrderByDescending(code => code.Created).ToList()
-            };
-
+            var vm = await CreateIndexViewModelAsync(string.Empty, string.Empty);
             return View(vm);
         }
 
@@ -53,13 +50,19 @@ namespace Nge.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _codesService.AddCode(
+                var result = await _codesService.AddCode(
                     newCodeValue.Trim(),
                     newCodeType.Trim());
-                return RedirectToAction(nameof(Index));
+                if (result.IsSuccess)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                AddError(result.Error.Value);
             }
 
-            return RedirectToAction(nameof(Index));
+            var vm = await CreateIndexViewModelAsync(newCodeValue, newCodeType);
+            return View(nameof(Index), vm);
         }
 
         // GET: Codes/Edit/5
@@ -70,11 +73,12 @@ namespace Nge.Web.Controllers
                 return NotFound();
             }
 
-            var code = await _codesService.Get(id.Value);
-            if (code == null)
+            if (!_codesService.Exists(id.Value))
             {
                 return NotFound();
             }
+
+            var code = await CreateEditViewModelAsync(id.Value);
             return View(code);
         }
 
@@ -92,8 +96,16 @@ namespace Nge.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                await _codesService.UpdateCode(id, value, type);
-                return RedirectToAction(nameof(Index));
+                var result = await _codesService.UpdateCode(id, value, type);
+                if (result.IsSuccess)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                AddError(result.Error.Value);
+
+                var vm = await CreateEditViewModelAsync(id, value, type);
+                return View(nameof(Edit), vm);
             }
 
             return RedirectToAction(nameof(Index));
@@ -108,6 +120,45 @@ namespace Nge.Web.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task<IndexViewModel> CreateIndexViewModelAsync(string value, string type)
+        {
+            return new IndexViewModel
+            {
+                Codes = (await _codesService.GetAll()).OrderByDescending(code => code.Created).ToList(),
+                NewCodeType = type,
+                NewCodeValue = value
+            };
+        }
+
+        private async Task<Code> CreateEditViewModelAsync(Guid id, string value = null, string type = null)
+        {
+            var code = await _codesService.Get(id);
+
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                code.Value = value;
+            }
+
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                code.Type = type;
+            }
+
+            return code;
+        }
+
+        private void AddError(Error errorValue)
+        {
+            switch (errorValue)
+            {
+                case Error.CodeExists:
+                    ModelState.AddModelError(string.Empty, "Код существует");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(errorValue), errorValue, null);
+            }
         }
     }
 }
