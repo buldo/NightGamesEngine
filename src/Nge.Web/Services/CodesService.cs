@@ -34,6 +34,7 @@ namespace Nge.Web.Services
         {
             var goodCodes = await _dbContext
                 .EnteredCodes
+                .Where(c => c.User == user)
                 .Join(_dbContext.Codes, e => e.Value, c => c.Value, (e, code) => new {code.Id, code.Type, code.Value})
                 .ToListAsync();
 
