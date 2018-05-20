@@ -17,36 +17,53 @@ namespace Nge.Web.Services
             _dbContext = dbContext;
         }
 
-        public async Task EnterCodeAsync(string code, ApplicationUser user)
+        public async Task AddCode(string codeValue, string codeType)
         {
-            var enterCodeEvent = new EnterCodeEvent()
+            var code = new Code
             {
-                User = user,
-                Value = code,
-                Entered = DateTimeOffset.Now
+                Id = Guid.NewGuid(),
+                Value = codeValue,
+                Type = codeType,
+                Created = DateTimeOffset.Now
             };
 
-            await _dbContext.EnteredCodes.AddAsync(enterCodeEvent);
+            _dbContext.Add(code);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<HashSet<(Guid CodeId, string Type, string Value)>> GetSuccessCodesAsync(ApplicationUser user)
+        public async Task<List<Code>> GetAll()
         {
-            var goodCodes = await _dbContext
-                .EnteredCodes
-                .Join(_dbContext.Codes, e => e.Value, c => c.Value, (e, code) => new {code.Id, code.Type, code.Value})
-                .ToListAsync();
-
-            return goodCodes.Select(c => (CodeId: c.Id, Type: c.Type, Value: c.Value)).ToHashSet();
+            return await _dbContext.Codes.ToListAsync();
         }
 
-        public async Task<HashSet<(Guid CodeId, string Type)>> GetLevelCodesAsync()
+        public async Task<Code> Get(Guid id)
         {
-            var codes = await _dbContext
-                .Codes
-                .Select(c => new {c.Id, c.Type})
-                .ToListAsync();
-            return codes.Select(c => (CodeId: c.Id, Type: c.Type)).ToHashSet();
+            return await _dbContext.Codes.SingleOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task UpdateCode(Guid id, string value, string type)
+        {
+            var code = await Get(id);
+            code.Type = type;
+            code.Value = value;
+            _dbContext.Update(code);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public bool Exists(Guid id)
+        {
+            return _dbContext.Codes.Any(e => e.Id == id);
+        }
+
+        public async Task Remove(Guid id)
+        {
+            var code = await _dbContext.Codes
+                .SingleOrDefaultAsync(m => m.Id == id);
+            if (code != null)
+            {
+                _dbContext.Codes.Remove(code);
+                await _dbContext.SaveChangesAsync();
+            }
         }
     }
 }

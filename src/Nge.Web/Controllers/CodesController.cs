@@ -3,29 +3,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Nge.Web.Data;
 using Nge.Web.Models;
 using Nge.Web.Models.Codes;
+using Nge.Web.Services;
 
 namespace Nge.Web.Controllers
 {
     [Authorize(Roles = Roles.Administrator)]
     public class CodesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly CodesService _codesService;
 
-        public CodesController(ApplicationDbContext context)
+        public CodesController(CodesService codesService)
         {
-            _context = context;
+            _codesService = codesService;
         }
 
         // GET: Codes
         public async Task<IActionResult> Index()
         {
-            var vm = new IndexViewModel()
+            var vm = new IndexViewModel
             {
-                Codes = await _context.Codes.ToListAsync()
+                Codes = (await _codesService.GetAll()).OrderByDescending(code => code.Created).ToList()
             };
 
             return View(vm);
@@ -39,8 +38,7 @@ namespace Nge.Web.Controllers
                 return NotFound();
             }
 
-            var code = await _context.Codes
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var code = await _codesService.Get(id.Value);
             if (code == null)
             {
                 return NotFound();
@@ -55,16 +53,12 @@ namespace Nge.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var code = new Code
-                {
-                    Id = Guid.NewGuid(),
-                    Value = newCodeValue.Trim(),
-                    Type = newCodeType.Trim()
-                };
-                _context.Add(code);
-                await _context.SaveChangesAsync();
+                await _codesService.AddCode(
+                    newCodeValue.Trim(),
+                    newCodeType.Trim());
                 return RedirectToAction(nameof(Index));
             }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -76,7 +70,7 @@ namespace Nge.Web.Controllers
                 return NotFound();
             }
 
-            var code = await _context.Codes.SingleOrDefaultAsync(m => m.Id == id);
+            var code = await _codesService.Get(id.Value);
             if (code == null)
             {
                 return NotFound();
@@ -89,34 +83,20 @@ namespace Nge.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Type,Value")] Code code)
+        public async Task<IActionResult> Edit(Guid id, string type, string value)
         {
-            if (id != code.Id)
+            if (!_codesService.Exists(id))
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(code);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CodeExists(code.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _codesService.UpdateCode(id, value, type);
                 return RedirectToAction(nameof(Index));
             }
-            return View(code);
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Codes/Delete/5
@@ -124,21 +104,10 @@ namespace Nge.Web.Controllers
         {
             if (id != null)
             {
-                var code = await _context.Codes
-                    .SingleOrDefaultAsync(m => m.Id == id);
-                if (code != null)
-                {
-                    _context.Codes.Remove(code);
-                    await _context.SaveChangesAsync();
-                }
+                await _codesService.Remove(id.Value);
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CodeExists(Guid id)
-        {
-            return _context.Codes.Any(e => e.Id == id);
         }
     }
 }

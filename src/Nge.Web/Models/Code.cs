@@ -12,5 +12,7 @@ namespace Nge.Web.Models
         public string Type { get; set; }
 
         public string Value { get; set; }
+
+        public DateTimeOffset Created { get; set; }
     }
 }

@@ -13,14 +13,14 @@ namespace Nge.Web.Controllers
     public class StatisticsController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly CodesService _codesService;
+        private readonly EnteredCodesService _enteredCodesService;
 
         public StatisticsController(
             ApplicationDbContext dbContext,
-            CodesService codesService)
+            EnteredCodesService enteredCodesService)
         {
             _dbContext = dbContext;
-            _codesService = codesService;
+            _enteredCodesService = enteredCodesService;
         }
 
         public async Task<IActionResult> Index()
@@ -29,7 +29,7 @@ namespace Nge.Web.Controllers
             var users = _dbContext.Users;
             foreach (var user in users)
             {
-                var codes = await _codesService.GetSuccessCodesAsync(user);
+                var codes = await _enteredCodesService.GetSuccessCodesAsync(user);
                 stat.Add(new PlayerViewModel
                 {
                     Count = codes.Count,

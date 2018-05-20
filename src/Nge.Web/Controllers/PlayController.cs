@@ -13,21 +13,21 @@ namespace Nge.Web.Controllers
     public class PlayController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly CodesService _codesService;
+        private readonly EnteredCodesService _enteredCodesService;
 
         public PlayController(
             UserManager<ApplicationUser> userManager,
-            CodesService codesService)
+            EnteredCodesService enteredCodesService)
         {
             _userManager = userManager;
-            _codesService = codesService;
+            _enteredCodesService = enteredCodesService;
         }
 
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            var enteredCodes = await _codesService.GetSuccessCodesAsync(user);
-            var allCodes = await _codesService.GetLevelCodesAsync();
+            var enteredCodes = await _enteredCodesService.GetSuccessCodesAsync(user);
+            var allCodes = await _enteredCodesService.GetLevelCodesAsync();
             allCodes.RemoveWhere(c => enteredCodes.Any(ec => ec.CodeId == c.CodeId));
 
             var codesVm = new List<ShortCodeViewModel>(enteredCodes.Count + allCodes.Count);
@@ -74,7 +74,7 @@ namespace Nge.Web.Controllers
         {
             codeToEnter = codeToEnter.Trim();
             var user = await _userManager.GetUserAsync(User);
-            await _codesService.EnterCodeAsync(codeToEnter, user);
+            await _enteredCodesService.EnterCodeAsync(codeToEnter, user);
             return RedirectToAction("Index");
         }
     }

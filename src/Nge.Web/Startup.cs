@@ -62,6 +62,7 @@ namespace Nge.Web
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
 
+            services.TryAddTransient<EnteredCodesService>();
             services.TryAddTransient<CodesService>();
         }
 
