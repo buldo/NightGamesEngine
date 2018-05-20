@@ -8,11 +8,11 @@ using Nge.Web.Models;
 
 namespace Nge.Web.Services
 {
-    public class CodesService
+    public class EnteredCodesService
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public CodesService(ApplicationDbContext dbContext)
+        public EnteredCodesService(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }

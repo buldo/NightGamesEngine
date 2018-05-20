@@ -3,31 +3,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Nge.Web.Data;
 using Nge.Web.Models;
 using Nge.Web.Models.Codes;
+using Nge.Web.Services.Codes;
 
 namespace Nge.Web.Controllers
 {
     [Authorize(Roles = Roles.Administrator)]
     public class CodesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly CodesService _codesService;
 
-        public CodesController(ApplicationDbContext context)
+        public CodesController(CodesService codesService)
         {
-            _context = context;
+            _codesService = codesService;
         }
 
         // GET: Codes
         public async Task<IActionResult> Index()
         {
-            var vm = new IndexViewModel()
-            {
-                Codes = await _context.Codes.ToListAsync()
-            };
-
+            var vm = await CreateIndexViewModelAsync(string.Empty, string.Empty);
             return View(vm);
         }
 
@@ -39,8 +34,7 @@ namespace Nge.Web.Controllers
                 return NotFound();
             }
 
-            var code = await _context.Codes
-                .SingleOrDefaultAsync(m => m.Id == id);
+            var code = await _codesService.GetAsync(id.Value);
             if (code == null)
             {
                 return NotFound();
@@ -55,17 +49,19 @@ namespace Nge.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var code = new Code
+                var result = await _codesService.AddCodeAsync(
+                    newCodeValue.Trim(),
+                    newCodeType.Trim());
+                if (result.IsSuccess)
                 {
-                    Id = Guid.NewGuid(),
-                    Value = newCodeValue.Trim(),
-                    Type = newCodeType.Trim()
-                };
-                _context.Add(code);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+
+                AddError(result.Error.Value);
             }
-            return RedirectToAction(nameof(Index));
+
+            var vm = await CreateIndexViewModelAsync(newCodeValue, newCodeType);
+            return View(nameof(Index), vm);
         }
 
         // GET: Codes/Edit/5
@@ -76,11 +72,12 @@ namespace Nge.Web.Controllers
                 return NotFound();
             }
 
-            var code = await _context.Codes.SingleOrDefaultAsync(m => m.Id == id);
-            if (code == null)
+            if (!_codesService.Exists(id.Value))
             {
                 return NotFound();
             }
+
+            var code = await CreateEditViewModelAsync(id.Value);
             return View(code);
         }
 
@@ -89,34 +86,28 @@ namespace Nge.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Type,Value")] Code code)
+        public async Task<IActionResult> Edit(Guid id, string type, string value)
         {
-            if (id != code.Id)
+            if (!_codesService.Exists(id))
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
+                var result = await _codesService.UpdateCodeAsync(id, value, type);
+                if (result.IsSuccess)
                 {
-                    _context.Update(code);
-                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CodeExists(code.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
+                AddError(result.Error.Value);
+
+                var vm = await CreateEditViewModelAsync(id, value, type);
+                return View(nameof(Edit), vm);
             }
-            return View(code);
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Codes/Delete/5
@@ -124,21 +115,49 @@ namespace Nge.Web.Controllers
         {
             if (id != null)
             {
-                var code = await _context.Codes
-                    .SingleOrDefaultAsync(m => m.Id == id);
-                if (code != null)
-                {
-                    _context.Codes.Remove(code);
-                    await _context.SaveChangesAsync();
-                }
+                await _codesService.RemoveAsync(id.Value);
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CodeExists(Guid id)
+        private async Task<IndexViewModel> CreateIndexViewModelAsync(string value, string type)
         {
-            return _context.Codes.Any(e => e.Id == id);
+            return new IndexViewModel
+            {
+                Codes = (await _codesService.GetAllAsync()).OrderByDescending(code => code.Created).ToList(),
+                NewCodeType = type,
+                NewCodeValue = value
+            };
+        }
+
+        private async Task<Code> CreateEditViewModelAsync(Guid id, string value = null, string type = null)
+        {
+            var code = await _codesService.GetAsync(id);
+
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                code.Value = value;
+            }
+
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                code.Type = type;
+            }
+
+            return code;
+        }
+
+        private void AddError(Error errorValue)
+        {
+            switch (errorValue)
+            {
+                case Error.CodeExists:
+                    ModelState.AddModelError(string.Empty, "Код существует");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(errorValue), errorValue, null);
+            }
         }
     }
 }

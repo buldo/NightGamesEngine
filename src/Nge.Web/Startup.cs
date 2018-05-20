@@ -16,6 +16,7 @@ using Nge.Web.Data;
 using Nge.Web.Models;
 using Nge.Web.Seeding;
 using Nge.Web.Services;
+using Nge.Web.Services.Codes;
 
 namespace Nge.Web
 {
@@ -62,6 +63,7 @@ namespace Nge.Web
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
 
+            services.TryAddTransient<EnteredCodesService>();
             services.TryAddTransient<CodesService>();
         }
 
