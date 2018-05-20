@@ -17,7 +17,7 @@ namespace Nge.Web.Services.Codes
             _dbContext = dbContext;
         }
 
-        public async Task<CodeUpdateResult> AddCode(string codeValue, string codeType)
+        public async Task<CodeUpdateResult> AddCodeAsync(string codeValue, string codeType)
         {
             if (Exists(codeValue))
             {
@@ -37,24 +37,24 @@ namespace Nge.Web.Services.Codes
             return CodeUpdateResult.CreateSuccess();
         }
 
-        public async Task<List<Code>> GetAll()
+        public async Task<List<Code>> GetAllAsync()
         {
             return await _dbContext.Codes.ToListAsync();
         }
 
-        public async Task<Code> Get(Guid id)
+        public async Task<Code> GetAsync(Guid id)
         {
             return await _dbContext.Codes.SingleOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<CodeUpdateResult> UpdateCode(Guid id, string value, string type)
+        public async Task<CodeUpdateResult> UpdateCodeAsync(Guid id, string value, string type)
         {
             if (Exists(value))
             {
                 return CodeUpdateResult.CreateExisted();
             }
 
-            var code = await Get(id);
+            var code = await GetAsync(id);
             code.Type = type;
             code.Value = value;
             _dbContext.Update(code);
@@ -67,7 +67,7 @@ namespace Nge.Web.Services.Codes
             return _dbContext.Codes.Any(e => e.Id == id);
         }
 
-        public async Task Remove(Guid id)
+        public async Task RemoveAsync(Guid id)
         {
             var code = await _dbContext.Codes
                 .SingleOrDefaultAsync(m => m.Id == id);

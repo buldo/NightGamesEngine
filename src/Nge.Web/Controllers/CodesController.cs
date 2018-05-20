@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nge.Web.Models;
 using Nge.Web.Models.Codes;
-using Nge.Web.Services;
 using Nge.Web.Services.Codes;
 
 namespace Nge.Web.Controllers
@@ -35,7 +34,7 @@ namespace Nge.Web.Controllers
                 return NotFound();
             }
 
-            var code = await _codesService.Get(id.Value);
+            var code = await _codesService.GetAsync(id.Value);
             if (code == null)
             {
                 return NotFound();
@@ -50,7 +49,7 @@ namespace Nge.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _codesService.AddCode(
+                var result = await _codesService.AddCodeAsync(
                     newCodeValue.Trim(),
                     newCodeType.Trim());
                 if (result.IsSuccess)
@@ -96,7 +95,7 @@ namespace Nge.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var result = await _codesService.UpdateCode(id, value, type);
+                var result = await _codesService.UpdateCodeAsync(id, value, type);
                 if (result.IsSuccess)
                 {
                     return RedirectToAction(nameof(Index));
@@ -116,7 +115,7 @@ namespace Nge.Web.Controllers
         {
             if (id != null)
             {
-                await _codesService.Remove(id.Value);
+                await _codesService.RemoveAsync(id.Value);
             }
 
             return RedirectToAction(nameof(Index));
@@ -126,7 +125,7 @@ namespace Nge.Web.Controllers
         {
             return new IndexViewModel
             {
-                Codes = (await _codesService.GetAll()).OrderByDescending(code => code.Created).ToList(),
+                Codes = (await _codesService.GetAllAsync()).OrderByDescending(code => code.Created).ToList(),
                 NewCodeType = type,
                 NewCodeValue = value
             };
@@ -134,7 +133,7 @@ namespace Nge.Web.Controllers
 
         private async Task<Code> CreateEditViewModelAsync(Guid id, string value = null, string type = null)
         {
-            var code = await _codesService.Get(id);
+            var code = await _codesService.GetAsync(id);
 
             if (!string.IsNullOrWhiteSpace(value))
             {
