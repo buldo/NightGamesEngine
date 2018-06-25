@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SpaServices;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.SpaServices;
 using System;
 
 namespace Buldo.AspNetCore.SpaServices.Extensions.VueDevelopmentServer
@@ -31,7 +32,7 @@ namespace Buldo.AspNetCore.SpaServices.Extensions.VueDevelopmentServer
                 throw new InvalidOperationException($"To use {nameof(UseReactDevelopmentServer)}, you must supply a non-empty value for the {nameof(SpaOptions.SourcePath)} property of {nameof(SpaOptions)} when calling {nameof(SpaApplicationBuilderExtensions.UseSpa)}.");
             }
 
-            ReactDevelopmentServerMiddleware.Attach(spaBuilder, npmScript);
+            VueDevelopmentServerMiddleware.Attach(spaBuilder, npmScript);
         }
     }
 }

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Buldo.AspNetCore.SpaServices.Extensions.VueDevelopmentServer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +52,11 @@ namespace Nge.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "AdminApp/build";
+            });
+
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
@@ -70,16 +76,19 @@ namespace Nge.Web
         {
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
+            app.UseCookiePolicy();
 
             app.UseAuthentication();
 
@@ -88,6 +97,17 @@ namespace Nge.Web
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "AdminApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
             });
         }
     }
