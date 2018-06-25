@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27705.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nge.Web", "Nge.Web\Nge.Web.csproj", "{99E027FC-9BE3-4DF2-B566-2CF5B2FBBBFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nge.Web", "Nge.Web\Nge.Web.csproj", "{99E027FC-9BE3-4DF2-B566-2CF5B2FBBBFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buldo.AspNetCore.SpaServices.Extensions", "Buldo.AspNetCore.SpaServices.Extensions\Buldo.AspNetCore.SpaServices.Extensions.csproj", "{1CE0C8CE-3D6B-4396-8F37-CD7D19D58CF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{99E027FC-9BE3-4DF2-B566-2CF5B2FBBBFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99E027FC-9BE3-4DF2-B566-2CF5B2FBBBFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99E027FC-9BE3-4DF2-B566-2CF5B2FBBBFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CE0C8CE-3D6B-4396-8F37-CD7D19D58CF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CE0C8CE-3D6B-4396-8F37-CD7D19D58CF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CE0C8CE-3D6B-4396-8F37-CD7D19D58CF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CE0C8CE-3D6B-4396-8F37-CD7D19D58CF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
