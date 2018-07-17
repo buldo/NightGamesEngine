@@ -54,7 +54,7 @@ namespace Nge.Web
 
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "AdminApp/build";
+                configuration.RootPath = "dist";
             });
 
             // Add application services.
@@ -103,6 +103,16 @@ namespace Nge.Web
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "AdminApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "GameApp";
 
                 if (env.IsDevelopment())
                 {

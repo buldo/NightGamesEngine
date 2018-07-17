@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <img src="../assets/logo.png">
-    <HelloWorld msg="Welcome ADMIN APP"/>
+    <HelloWorld msg="Welcome to GAME APP"/>
   </div>
 </template>
 
