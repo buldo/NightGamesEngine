@@ -100,25 +100,29 @@ namespace Nge.Web
             });
 
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "AdminApp";
-
-                if (env.IsDevelopment())
+            app.MapWhen(
+                context => context.Request.Path.StartsWithSegments("/admin"),
+                intApp => intApp.UseSpa(spa =>
                 {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
+                    spa.Options.SourcePath = "AdminApp";
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "GameApp";
+                    if (env.IsDevelopment())
+                    {
+                        spa.UseReactDevelopmentServer(npmScript: "start");
+                    }
+                }));
 
-                if (env.IsDevelopment())
+            app.MapWhen(
+                context => context.Request.Path.StartsWithSegments("/game"),
+                intApp => intApp.UseSpa(spa =>
                 {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
+                    spa.Options.SourcePath = "GameApp";
+
+                    if (env.IsDevelopment())
+                    {
+                        spa.UseReactDevelopmentServer(npmScript: "start");
+                    }
+                }));
         }
     }
 }
