@@ -19,6 +19,8 @@ namespace Nge.Web.Data
 
         public DbSet<EnterCodeEvent> EnteredCodes { get; set; }
 
+        public DbSet<Game> Games { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
