@@ -110,7 +110,7 @@ namespace Nge.Web
 
                     if (env.IsDevelopment())
                     {
-                        spa.UseReactDevelopmentServer(npmScript: "start");
+                        spa.UseReactDevelopmentServer(npmScript: "serve");
                     }
                 }));
 
@@ -122,7 +122,7 @@ namespace Nge.Web
 
                     if (env.IsDevelopment())
                     {
-                        spa.UseReactDevelopmentServer(npmScript: "start");
+                        spa.UseReactDevelopmentServer(npmScript: "serve");
                     }
                 }));
         }
